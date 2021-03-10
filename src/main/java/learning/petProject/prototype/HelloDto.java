@@ -1,4 +1,4 @@
-package learning.petProject;
+package learning.petProject.prototype;
 
 import lombok.AccessLevel;
 import lombok.Data;
