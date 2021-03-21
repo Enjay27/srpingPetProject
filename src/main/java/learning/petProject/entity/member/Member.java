@@ -1,5 +1,6 @@
 package learning.petProject.entity.member;
 
+import learning.petProject.entity.BaseEntity;
 import learning.petProject.entity.content.Content;
 import learning.petProject.entity.reply.Reply;
 import lombok.Getter;
@@ -15,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Member {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue

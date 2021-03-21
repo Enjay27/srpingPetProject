@@ -1,5 +1,6 @@
 package learning.petProject.entity.reply;
 
+import learning.petProject.entity.content.Content;
 import learning.petProject.entity.member.Member;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,6 +25,10 @@ public class Reply {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     Member member;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "content_id")
+    Content content;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")

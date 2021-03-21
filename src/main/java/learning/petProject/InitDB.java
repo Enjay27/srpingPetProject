@@ -8,13 +8,16 @@ import learning.petProject.entity.reply.Reply;
 import learning.petProject.entity.reply.ReplyStatus;
 import learning.petProject.repository.ContentRepository;
 import learning.petProject.repository.MemberRepository;
+import learning.petProject.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 @Component
 @RequiredArgsConstructor
@@ -25,6 +28,8 @@ public class InitDB {
     public void init() {
         initService.dbInitMember();
         initService.dbInitContent();
+        initService.dbInitParentReply();
+        initService.dbInitChildReply();
     }
 
     @Component
@@ -36,6 +41,7 @@ public class InitDB {
 
         private final MemberRepository memberRepository;
         private final ContentRepository contentRepository;
+        private final ReplyRepository replyRepository;
 
         public void dbInitMember() {
             Member member1 = createMember("userA", "1234", "AA", MemberStatus.ACTIVE, MemberType.REGULAR);
@@ -53,13 +59,14 @@ public class InitDB {
 
         public void dbInitContent() {
             List<Member> allMembers = memberRepository.findAll();
+            Random random = new Random();
             for (Member member : allMembers) {
                 for (int i = 0; i < 5; i++) {
-                    Content free1 = createFreeContent("free title " + i, "free content " + i, ContentStatus.VIEWABLE, member);
-                    Content photo1 = createPhotoContent("photo title " + i, "photo content " + i, ContentStatus.DELETED, member);
-                    Content question1 = createQuestionContent("question title " + i, "question content " + i, ContentStatus.VIEWABLE, member);
-                    Content walking1 = createWalkingContent("walking title " + i, "walking content " + i, ContentStatus.DELETED, member);
-                    Content photo2 = createPhotoContent("photo title " + i, "photo content " + i, ContentStatus.VIEWABLE, member);
+                    Content free1 = createFreeContent("free title " + i, "free content " + i, List.of(ContentStatus.values()).get(i % 2), member);
+                    Content photo1 = createPhotoContent("photo title " + i, "photo content " + i, List.of(ContentStatus.values()).get(i % 2), member);
+                    Content question1 = createQuestionContent("question title " + i, "question content " + i, List.of(ContentStatus.values()).get(i % 2), member);
+                    Content walking1 = createWalkingContent("walking title " + i, "walking content " + i, List.of(ContentStatus.values()).get(i % 2), member);
+                    Content photo2 = createPhotoContent("photo title " + i, "photo content " + i, List.of(ContentStatus.values()).get(i % 2), member);
                     em.persist(free1);
                     em.persist(photo1);
                     em.persist(question1);
@@ -69,14 +76,32 @@ public class InitDB {
             }
         }
 
-        public void dbInitReply() {
+        public void dbInitParentReply() {
             List<Content> allContents = contentRepository.findAll();
+            List<Member> allMembers = memberRepository.findAll();
+            int memberSize = allMembers.size();
+            Random random = new Random();
             for (Content content : allContents) {
-                for (int i = 0; i < 3; i++) {
-
+                for (int i = 0; i < 2; i++) {
+                    Member randomMember = allMembers.get(i);
+                    ReplyStatus randomStatus = List.of(ReplyStatus.values()).get(i);
+                    Reply reply = createParentReply(randomMember.getName() + i, content, randomMember, randomStatus);
+                    em.persist(reply);
                 }
             }
         }
+
+        public void dbInitChildReply() {
+            List<Reply> allReplies = replyRepository.findAll();
+            List<Member> allMembers = memberRepository.findAll();
+            for (Reply reply : allReplies) {
+                for(int i = 0; i < 2; i++){
+                    Reply childReply = createChildReply("child " + i, reply, allMembers.get(i), List.of(ReplyStatus.values()).get(i));
+                    em.persist(childReply);
+                }
+            }
+        }
+
 
         private Member createMember(String id, String password, String name, MemberStatus status, MemberType type) {
             Member member = new Member();
@@ -107,11 +132,12 @@ public class InitDB {
         }
 
         private Content createQuestionContent(String title, String content, ContentStatus status, Member member) {
-            Content created = new Question();
+            Question created = new Question();
             created.setTitle(title);
             created.setContent(content);
             created.setStatus(status);
             created.setMember(member);
+            created.setQuestionType(Arrays.stream(QuestionType.values()).findAny().get());
             return created;
         }
 
@@ -124,11 +150,24 @@ public class InitDB {
             return created;
         }
 
-        private Reply createReply(String reply, Member member, ReplyStatus status) {
+        private Reply createParentReply(String reply, Content content, Member member, ReplyStatus status) {
             Reply created = new Reply();
+            created.setReply(reply);
+            created.setContent(content);
+            created.setMember(member);
+            created.setStatus(status);
+
+            return created;
+        }
+
+        private Reply createChildReply(String reply, Reply parent, Member member, ReplyStatus status) {
+            Reply created = new Reply();
+            created.setParent(parent);
+            created.setContent(parent.getContent());
             created.setReply(reply);
             created.setMember(member);
             created.setStatus(status);
+            parent.getChild().add(created);
 
             return created;
         }
