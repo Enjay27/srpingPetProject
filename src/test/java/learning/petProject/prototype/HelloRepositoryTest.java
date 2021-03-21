@@ -1,6 +1,7 @@
 package learning.petProject.prototype;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.internal.LongArrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +12,10 @@ import javax.persistence.PersistenceContext;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -50,5 +52,6 @@ class HelloRepositoryTest {
         assertThat(helloRepository.count()).isEqualTo(0);
 
     }
+
 
 }
