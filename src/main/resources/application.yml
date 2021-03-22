@@ -1,13 +1,13 @@
 spring:
   datasource:
-    url: jdbc:mariadb://192.168.50.2:3307/spring_pet
+    url: jdbc:mariadb://enjay.i234.me:33733/spring_pet
     username: admin
     password: Djemals!23
     driver-class-name: org.mariadb.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     open-in-view: true
     properties:
       hibernate:
