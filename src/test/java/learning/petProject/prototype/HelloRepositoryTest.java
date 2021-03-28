@@ -5,6 +5,7 @@ import org.assertj.core.internal.LongArrays;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -28,6 +29,7 @@ class HelloRepositoryTest {
     EntityManager em;
 
     @Test
+    @Rollback(false)
     public void basicCRUD() {
         Hello hello1 = new Hello("hello1");
         Hello hello2 = new Hello("hello2");
