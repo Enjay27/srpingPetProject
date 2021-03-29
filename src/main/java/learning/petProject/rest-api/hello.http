@@ -1,1 +1,1 @@
-GET https://m.blog.naver.com/FeedList.nhn
+GET localhost:8080/hello
