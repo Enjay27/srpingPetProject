@@ -1,5 +1,6 @@
 package learning.petProject.entity.content;
 
+import learning.petProject.entity.BaseEntity;
 import learning.petProject.entity.member.Member;
 import learning.petProject.entity.reply.Reply;
 import lombok.Getter;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-public abstract class Content {
+public abstract class Content extends BaseEntity {
 
     @GeneratedValue
     @Id

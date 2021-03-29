@@ -10,6 +10,7 @@ import learning.petProject.repository.ContentRepository;
 import learning.petProject.repository.MemberRepository;
 import learning.petProject.repository.ReplyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.Random;
 @Component
 @RequiredArgsConstructor
 public class InitDB {
+
     private final InitService initService;
 
     @PostConstruct
